@@ -1,9 +1,8 @@
-
-import { Routes, Route } from "react-router"
-import Landing from './pages/Landing/Landing.jsx'
-import Login from './pages/Auth/Login.jsx'
-import Register from './pages/Auth/Register.jsx'
-import ToDoList from './pages/ToDo/TodoList.jsx'
+import { Routes, Route } from "react-router";
+import Landing from "./pages/Landing/Landing.jsx";
+import Login from "./pages/Auth/Login.jsx";
+import Register from "./pages/Auth/Register.jsx";
+import ToDoList from "./pages/ToDo/TodoList.jsx";
 
 function App() {
   return (
@@ -15,7 +14,7 @@ function App() {
         <Route path="/to-do-list" element={<ToDoList />} />
       </Routes>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
