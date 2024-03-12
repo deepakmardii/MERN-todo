@@ -1,7 +1,11 @@
+import Navbar from "../../components/Navbar";
+
 const TodoList = () => {
   return (
-    <div>TodoList</div>
-  )
-}
+    <>
+      <Navbar />
+    </>
+  );
+};
 
-export default TodoList
+export default TodoList;
