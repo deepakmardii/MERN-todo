@@ -21,11 +21,11 @@ const deleteToDo = (id) => {
 const updateToDo = ({ id, data }) => {
   return axios.post(SERVER_URL + "/update-to-do" + id, data, authHeaders());
 };
-const AuthServices = {
+const ToDoServices = {
   createToDo,
   getAllToDo,
   deleteToDo,
   updateToDo,
 };
 
-export default AuthServices;
+export default ToDoServices;
