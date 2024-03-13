@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
 import { getErrorMessage } from "../../util/getError";
-import { Input, Modal, Tag, Tooltip, message } from "antd";
+import { Input, Modal, Select, Tag, Tooltip, message } from "antd";
 import { getUserDetails } from "../../util/getUser";
 import ToDoServices from "../../services/todoServices";
 import { useNavigate } from "react-router";
@@ -16,8 +16,13 @@ const TodoList = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [isAdding, setIsAdding] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [allToDo, setAllToDo] = useState([]);
+  const [currentEditItem, setCurrentEditItem] = useState("");
+  const [updatedTitle, setUpdatedTitle] = useState("");
+  const [updatedDescription, setUpdatedDescription] = useState("");
+  const [updatedStatus, setUpdatedStatus] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -77,6 +82,11 @@ const TodoList = () => {
 
   const handleEdit = (item) => {
     console.log(item);
+    setCurrentEditItem(item);
+    setUpdatedTitle(item?.title);
+    setUpdatedDescription(item?.description);
+    setUpdatedStatus(item?.isCompleted);
+    setIsEditing(true);
   };
 
   const handleDelete = (item) => {
@@ -87,6 +97,30 @@ const TodoList = () => {
     console.log(id);
   };
 
+  const handleUpdateTask = async () => {
+    try {
+      setLoading(true);
+
+      const data = {
+        title: updatedTitle,
+        description: updatedDescription,
+        isCompleted: updatedStatus,
+      };
+      console.log(data);
+      const response = await ToDoServices.updateToDo(
+        currentEditItem?._id,
+        data
+      );
+      console.log(response);
+      message.success(`${currentEditItem?.title} Updated Succesfully`);
+      setLoading(false);
+      isEditing(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+      message.error(getErrorMessage(error));
+    }
+  };
   return (
     <>
       <Navbar />
@@ -125,11 +159,15 @@ const TodoList = () => {
                     </Tooltip>
                     {item?.isCompleted ? (
                       <Tooltip title="Mark as completed">
-                        <CheckCircleFilled />
+                        <CheckCircleFilled
+                          onClick={() => handleUpdateStatus(item._id)}
+                        />
                       </Tooltip>
                     ) : (
                       <Tooltip title="Mark as incomplete">
-                        <CheckCircleOutlined />
+                        <CheckCircleOutlined
+                          onClick={() => handleUpdateStatus(item._id)}
+                        />
                       </Tooltip>
                     )}
                   </div>
@@ -154,6 +192,38 @@ const TodoList = () => {
             placeholder="Description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
+          />
+        </Modal>
+        <Modal
+          confirmLoading={loading}
+          title={`Update ${currentEditItem.title}`}
+          open={isEditing}
+          onOk={handleUpdateTask}
+          onCancel={() => setIsEditing(false)}
+        >
+          <Input
+            placeholder="Update Title"
+            value={updatedTitle}
+            onChange={(e) => setUpdatedTitle(e.target.value)}
+          />
+          <Input.TextArea
+            placeholder="Description"
+            value={updatedDescription}
+            onChange={(e) => setUpdatedDescription(e.target.value)}
+          />
+          <Select
+            onChange={(value) => setUpdatedStatus(value)}
+            value={updatedStatus}
+            options={[
+              {
+                value: false,
+                label: "Not Completed",
+              },
+              {
+                value: true,
+                label: "Completed",
+              },
+            ]}
           />
         </Modal>
       </section>
