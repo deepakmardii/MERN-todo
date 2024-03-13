@@ -5,7 +5,7 @@ const todoSchema = new Schema(
   {
     title: { type: String, required: true },
     description: { type: String, required: true },
-    isCompleted: { type: String, required: true },
+    isCompleted: { type: Boolean, required: true },
     completedOn: String,
     createdBy: {
       ref: "User",
